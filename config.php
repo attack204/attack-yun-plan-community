@@ -1,0 +1,5 @@
+localhost
+root
+
+mydb
+DailyLife
