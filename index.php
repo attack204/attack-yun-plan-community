@@ -13,25 +13,59 @@
     <script src="//cdnjs.loli.net/ajax/libs/mdui/0.4.2/js/mdui.min.js"></script>
     <script src="https://cdn.staticfile.org/jquery/3.2.1/jquery.min.js"></script>
     <script>
-        var flag = 0,
-            inHTML;
+        var flag = 0, inHTML;
         $(document).ready(function() {
             mdui.mutation();
             if (flag == 1) {
                 $("#NotLogin").hide(1000);
                 inHTML = "<?php echo $_SESSION[$_SESSION['logstate']] ?>"
-               // alert(inHTML);
                 $("#NotLogin").after(inHTML);
                 mdui.mutation();
             }
+            $("#why").click(function() {
+                alert(flag);
+            });
             $(this).click(function() {
                 var inst = new mdui.Drawer("#LeftDrawer");
                 if (inst.getState() == "opened") inst.close();
             });
+            $(".Delet").click(function() {
+                var fa = $(this).parent().parent();
+                fa.remove();
+            });
+            $(".Add").click(function() {
+                for (var i = 0; i < 4; i++) {
+                    var nw = document.createElement('tr');
+                    var td1 = document.createElement('td');
+                    td1.innerHTML = "1";
+                    nw.appendChild(td1);
+                    var nxt = $(this).parent().parent();
+                    nxt.after(nw);
+                }
+                mdui.mutation("#MyTable");
+            });
+
         });
+
+        function Update() {
+            var xmlhttp = new XMLHttpRequest();
+            var text = $("#Main").html();
+            xmlhttp.onreadystatechange = function() {
+                if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                    var tmp = xmlhttp.responseText;
+                    alert(tmp);
+                    document.getElementById("recDate").innerHTML = xmlhttp.responseText;
+                }
+            }
+            xmlhttp.open("POST", "./update.php");
+            xmlhttp.setRequestHeader('Content-Type', ' application/x-www-form-urlencoded');
+            xmlhttp.send("name=" + text);
+            //alert(text);
+        }
+
         function SignOut() {
             var flag = "<?php echo isset($_SESSION['logstate']); ?>";
-            var xmlhttp = new XMLHttpRequest(); //ie5 ie6的不管了。。
+            var xmlhttp = new XMLHttpRequest(); //ie5 ie6的不管了。
             xmlhttp.open("POST", "./logout.php", true);
             xmlhttp.send();
             location.reload();
@@ -43,11 +77,13 @@
 if (isset($_SESSION['logstate'])) {
     $user = $_SESSION['logstate'];
     if (isset($user)) {
-    
-        $text = "<div style='margin-top: 10%; width: 60%;' class='mdui-container'><div mdui-table-fluid'><table id='MyTable' class='mdui-table mdui-table-hoverable mdui-table-selectable'><thead><tr><th>#</th><th>时间</th><th>实践</th><th>备注</th><th>操作</th></tr></thead><tbody><tr><td>1</td><td>2</td><td>3</td><td>4</td><td><button class='Delet mdui-btn mdui-btn-icon'><i class='mdui-icon material-icons'>delete</i></button><button class='Add mdui-btn mdui-btn-icon'><i class='mdui-icon material-icons'>add</i></button></td></tr></tbody></tbody></div></div>";
-       // if (!isset($_SESSION[$user]))
-        $_SESSION[$user] = $text; //现在就是这里了
-        //echo $_SESSION[$user];
+        $text = "<div id='Main'><div style='margin-top: 10%; width: 60%;' class='mdui-container'><div mdui-table-fluid'><table id='MyTable' class='mdui-table mdui-table-hoverable mdui-table-selectable'><thead><tr><th>#</th><th>时间</th><th>实践</th><th>备注</th><th>操作</th></tr></thead><tbody><tr><td>1</td><td>2</td><td>3</td><td>4</td><td><button class='Delet mdui-btn mdui-btn-icon'><i class='mdui-icon material-icons'>delete</i></button><button class='Add mdui-btn mdui-btn-icon'><i class='mdui-icon material-icons'>add</i></button></td></tr></tbody></tbody></div></div></div>";
+        if (isset($_SESSION[$user])) { //加了这句if else会导致js失效?
+            echo "123";
+        }
+        else {
+            $_SESSION[$user] = $text; //如果没有设置过的话就初始化一下
+        }
         echo "<script> flag = 1; </script>"; //逻辑是这样的：首先把flag赋值为1表示用户已经登陆，然后根据_SESSION里面的信息加载页面元素
     }
 }
@@ -55,6 +91,9 @@ if (isset($_SESSION['logstate'])) {
 
 
 <body class="mdui-theme-primary-indigo mdui-theme-accent-indigo">
+    <button id="Test" onclick="Update()">update</button>
+    <div id="recDate"></div>
+    <button id="why"></button>
     <div class="mdui-appbar">
         <div class="mdui-toolbar mdui-color-indigo">
             <a href="javascript:;" class="mdui-btn mdui-btn-icon" mdui-drawer="{target: '#LeftDrawer'}"><i class="mdui-icon material-icons">menu</i></a>

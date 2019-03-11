@@ -1,50 +1,93 @@
 <!DOCTYPE HTML>
 <html lang="zh-CN">
+<?php session_start(); ?>
 
 <head>
 
     <head>
-        <meta name="generator" content="Hexo 3.8.0">
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
-        <title>在线计划表</title>
+        <title>attack社区</title>
     </head>
-    </script>
     <link rel="stylesheet" href="//cdnjs.loli.net/ajax/libs/mdui/0.4.2/css/mdui.min.css">
     <script src="//cdnjs.loli.net/ajax/libs/mdui/0.4.2/js/mdui.min.js"></script>
     <script src="https://cdn.staticfile.org/jquery/3.2.1/jquery.min.js"></script>
-    <script src="https://cdn.staticfile.org/popper.js/1.12.5/umd/popper.min.js"></script>
-    <script src="//mdui-aliyun.cdn.w3cbus.com/source/dist/js/mdui.min.js"></script>
     <script>
+        var flag = 0,
+            inHTML;
+        $(document).ready(function () {
+            mdui.mutation();
+            if (flag == 1) {
+                $("#NotLogin").hide(1000);
+                inHTML = "<?php echo $_SESSION[$_SESSION['logstate']] ?>"
+                $("#NotLogin").after(inHTML);
+                mdui.mutation();
+            }
+            $(this).click(function () {
+                var inst = new mdui.Drawer("#LeftDrawer");
+                if (inst.getState() == "opened") inst.close();
+            });
+            $(".Delet").click(function () {
+                var fa = $(this).parent().parent();
+                fa.remove();
+            });
+            $(".Add").click(function () {
+                for (var i = 0; i < 4; i++) {
+                    var nw = document.createElement('tr');
+                    var td1 = document.createElement('td');
+                    td1.innerHTML = "1";
+                    nw.appendChild(td1);
+                    var nxt = $(this).parent().parent();
+                    nxt.after(nw);
+                }
+                mdui.mutation("#MyTable");
+            });
+        });
 
-
+        function Exit() {
+            alert("1");
+            var text = $("#Main").html();
+            alert(text);
+        }
     </script>
 </head>
 
-<style>
 
-</style>
 
-<body class="mdui-theme-primary-pink mdui-table-selectable">
-    <div class="mdui-fab-wrapper" mdui-fab="{trigger: 'hover'}">
-        <button class="mdui-fab mdui-ripple mdui-color-theme-accent">
-            <!-- 默认显示的图标 -->
-            <i class="mdui-icon material-icons">add</i>
+<body class="mdui-theme-primary-indigo mdui-theme-accent-indigo">
+    <button id="Test" onclick="Exit()">123</button>
 
-            <!-- 在拨号菜单开始打开时，平滑切换到该图标，若不需要切换图标，则可以省略该元素 -->
-            <i class="mdui-icon mdui-fab-opened material-icons">add</i>
-        </button>
-        <div class="mdui-fab-dial">
-            <button class="mdui-fab mdui-fab-mini mdui-ripple mdui-color-pink"><i
-                    class="mdui-icon material-icons">backup</i></button>
-            <button class="mdui-fab mdui-fab-mini mdui-ripple mdui-color-red"><i
-                    class="mdui-icon material-icons">bookmark</i></button>
-            <button class="mdui-fab mdui-fab-mini mdui-ripple mdui-color-orange"><i
-                    class="mdui-icon material-icons">access_alarms</i></button>
-            <button class="mdui-fab mdui-fab-mini mdui-ripple mdui-color-blue"><i
-                    class="mdui-icon material-icons">touch_app</i></button>
+    <div id='Main'>
+        <div style='margin-top: 10%; width: 60%;' class='mdui-container'>
+            <div mdui-table-fluid'>
+                <table id='MyTable' class='mdui-table mdui-table-hoverable mdui-table-selectable'>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>时间</th>
+                            <th>实践</th>
+                            <th>备注</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>2</td>
+                            <td>3</td>
+                            <td>4</td>
+                            <td><button class='Delet mdui-btn mdui-btn-icon'><i
+                                        class='mdui-icon material-icons'>delete</i></button><button
+                                    class='Add mdui-btn mdui-btn-icon'><i
+                                        class='mdui-icon material-icons'>add</i></button></td>
+                        </tr>
+                    </tbody>
+                    </tbody>
+            </div>
         </div>
     </div>
+
+
 
 </body>
 
